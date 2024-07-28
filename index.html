@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Operator Tool</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #0fa26a;
+            --secondary-color: #2d8a92;
+            --background-color: #e0f2f1;
+            --text-color: #263238;
+            --light-text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-section select,
+        .form-section input[type="number"],
+        .form-section input[type="text"],
+        .form-section textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-section select:focus,
+        .form-section input[type="number"]:focus,
+        .form-section input[type="text"]:focus,
+        .form-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .predefined-operator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .fixed-operator {
+            display: flex;
+            align-items: center;
+        }
+
+        .fixed-operator select {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .help-button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .help-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .operator-info {
+            grid-column: 1 / -1;
+            background-color: var(--background-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .static-operator-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .static-operator-wrapper input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .operator-controls button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .operator-controls button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .operator-controls button:first-child {
+            margin-right: 5px;
+        }
+
+        .generate-button {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .generate-button button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .generate-button button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .generate-button button:active {
+            transform: scale(0.98);
+        }
+
+        .copy-button {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-left: 10px;
+            display: none;
+        }
+
+        .copy-button:hover {
+            background-color: var(--primary-color);
+        }
+
+        .copy-button:active {
+            transform: scale(0.98);
+        }
+
+        .url-output textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Search Operator Tool</h2>
+
+        <div class="form-section">
+            <label for="countryCode">Choose country:</label>
+            <select id="countryCode">
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="au">Australia</option>
+                <option value="in">India</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="numResults">Number of results:</label>
+            <input type="number" id="numResults" value="10" min="1" max="100">
+        </div>
+
+        <div class="form-section predefined-operator">
+            <div>
+                <label for="predefinedOperator">Predefined Search Operator:</label>
+                <div class="fixed-operator">
+                    <select id="predefinedOperator">
+                        <option value="">Blank</option>
+                        <option value="site:">site:</option>
+                        <option value="related:">related:</option>
+                        <option value="intitle:">intitle:</option>
+                        <option value="allintitle:">allintitle:</option>
+                        <option value="inurl:">inurl:</option>
+                        <option value="allinurl:">allinurl:</option>
+                        <option value="intext:">intext:</option>
+                        <option value="allintext:">allintext:</option>
+                    </select>
+                    <button class="help-button" onclick="showOperatorInfo()">?</button>
+                </div>
+            </div>
+            <div>
+                <label for="predefinedQuery">Query:</label>
+                <input type="text" id="predefinedQuery" placeholder="Enter your query">
+            </div>
+            <div class="operator-info fade-in" id="operatorInfo" style="display: none;">
+                Click on the "?" button next to a search operator to view its usage.
+            </div>
+        </div>
+
+        <div class="form-section static-operators">
+            <label for="staticOperators">Static Search Operators:</label>
+            <div id="staticOperators">
+                <div class="static-operator-wrapper">
+                    <input type="text" class="staticOperator" placeholder="Enter static operator">
+                    <div class="operator-controls">
+                        <button onclick="addStaticOperator()">+</button>
+                        <button onclick="removeStaticOperator(this)">-</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section generate-button">
+            <button onclick="generateUrl()">Generate URL</button>
+            <button id="copyButton" class="copy-button" onclick="copyUrl()">Copy URL</button>
+        </div>
+
+        <div class="form-section url-output">
+            <label for="generatedUrl">Generated URL:</label>
+            <textarea id="generatedUrl" rows="3" readonly></textarea>
+        </div>
+
+    </div>
+
+    <script>
+        function showOperatorInfo() {
+            var operatorSelect = document.getElementById('predefinedOperator');
+            var operatorInfo = document.getElementById('operatorInfo');
+            var selectedOperator = operatorSelect.value;
+            
+            var operatorDescriptions = {
+                "site:": "Search for results from a particular website.",
+                "related:": "Search for sites related to a given domain.",
+                "intitle:": "Search for pages with a particular word in the title tag.",
+                "allintitle:": "Search for pages with multiple words in the title tag.",
+                "inurl:": "Search for pages with a particular word in the URL.",
+                "allinurl:": "Search for pages with multiple words in the URL.",
+                "intext:": "Search for pages with a particular word in their content.",
+                "allintext:": "Search for pages with multiple words in their content."
+            };
+            
+            operatorInfo.textContent = operatorDescriptions[selectedOperator] || "Click on the \"?\" button next to a search operator to view its usage.";
+            operatorInfo.style.display = 'block';
+            operatorInfo.classList.remove('fade-in');
+            void operatorInfo.offsetWidth; // Trigger reflow
+            operatorInfo.classList.add('fade-in');
+        }
+
+        function generateUrl() {
+            var countryCode = document.getElementById('countryCode').value;
+            var numResults = document.getElementById('numResults').value;
+            var predefinedOperator = document.getElementById('predefinedOperator').value;
+            var predefinedQuery = document.getElementById('predefinedQuery').value;
+            var predefined = predefinedOperator + predefinedQuery;
+            var staticOperators = [];
+            var staticOperatorInputs = document.getElementsByClassName('staticOperator');
+
+            for (var i = 0; i < staticOperatorInputs.length; i++) {
+                if (staticOperatorInputs[i].value.trim() !== '') {
+                    staticOperators.push(staticOperatorInputs[i].value.trim());
+                }
+            }
+
+            var baseUrl = 'https://www.google.com/search?q=';
+            var query = '';
+            if (predefined) {
+                query += encodeURIComponent(predefined) + ' ';
+            }
+            if (staticOperators.length > 0) {
+                staticOperators.forEach(function(operator) {
+                    query += '"' + encodeURIComponent(operator) + '" ';
+                });
+            }
+            var url = baseUrl + query + '&gl=' + countryCode + '&num=' + numResults;
+
+            var generatedUrlTextarea = document.getElementById('generatedUrl');
+            generatedUrlTextarea.value = url;
+            generatedUrlTextarea.classList.remove('fade-in');
+            void generatedUrlTextarea.offsetWidth; // Trigger reflow
+            generatedUrlTextarea.classList.add('fade-in');
+
+            // Show the copy button
+            document.getElementById('copyButton').style.display = 'inline-block';
+        }
+
+        function addStaticOperator() {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'static-operator-wrapper fade-in';
+            wrapper.innerHTML = `
+                <input type="text" class="staticOperator" placeholder="Enter static operator">
+                <div class="operator-controls">
+                    <button onclick="addStaticOperator()">+</button>
+                    <button onclick="removeStaticOperator(this)">-</button>
+                </div>
+            `;
+            document.getElementById('staticOperators').appendChild(wrapper);
+        }
+
+        function removeStaticOperator(button) {
+            var wrapper = button.closest('.static-operator-wrapper');
+            var container = document.getElementById('staticOperators');
+            if (container.children.length > 1) {
+                wrapper.classList.add('fade-in');
+                setTimeout(() => {
+                    wrapper.remove();
+                }, 500);
+            }
+        }
+
+        function copyUrl() {
+            var generatedUrlTextarea = document.getElementById('generatedUrl');
+            generatedUrlTextarea.select();
+            document.execCommand('copy');
+            alert('URL copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
