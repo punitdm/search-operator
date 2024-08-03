@@ -1,5 +1,7 @@
 ###Search Operator Tool
 
+Live link:- [Search Operator]([url](https://punitdm.github.io/search-operator/))
+
 #### Description:
 The Search Operator Tool is a web application designed to help users generate customized Google search URLs with various predefined and static search operators. This tool provides a user-friendly interface for selecting search parameters, making it easier to construct complex search queries for more precise search results.
 
